@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Play, ArrowRight, Sparkles } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 
+import Link from "next/link"
+
 export function Hero() {
   const [text, setText] = useState("")
   const fullText = "Intelligence."
@@ -109,13 +111,15 @@ export function Hero() {
             </p>
 
             <div className="flex flex-wrap gap-4 mt-4">
-              <Button
-                size="lg"
-                className="rounded-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 group shadow-lg shadow-primary/30"
-              >
-                Watch Demo
-                <Play className="ml-2 w-4 h-4 group-hover:scale-110 transition-transform" />
-              </Button>
+              <Link href="#demo-video">
+                <Button
+                  size="lg"
+                  className="rounded-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 group shadow-lg shadow-primary/30"
+                >
+                  Watch Demo
+                  <Play className="ml-2 w-4 h-4 group-hover:scale-110 transition-transform" />
+                </Button>
+              </Link>
               <Button
                 size="lg"
                 variant="outline"

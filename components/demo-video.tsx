@@ -5,7 +5,7 @@ import { Play } from "lucide-react";
 
 export function DemoVideo() {
   return (
-    <section className="py-24 relative bg-black">
+    <section id="demo-video" className="py-24 relative bg-black">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <motion.h2

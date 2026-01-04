@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Sparkles } from "lucide-react"
+import Link from "next/link"
 
 export function CTA() {
   return (
@@ -42,13 +43,15 @@ export function CTA() {
               <Button size="lg" className="rounded-full bg-white text-black hover:bg-white/90 px-10 h-14 text-lg">
                 Join the Waitlist
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full border-white/20 hover:bg-white/10 px-10 h-14 text-lg bg-transparent"
-              >
-                View Demo
-              </Button>
+              <Link href="#demo-video">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="rounded-full border-white/20 hover:bg-white/10 px-10 h-14 text-lg bg-transparent"
+                >
+                  View Demo
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </motion.div>
