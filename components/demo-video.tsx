@@ -28,20 +28,16 @@ export function DemoVideo() {
           transition={{ duration: 1 }}
           className="relative aspect-video max-w-5xl mx-auto rounded-[2.5rem] overflow-hidden border border-white/10 group cursor-pointer shadow-[0_0_50px_rgba(0,0,0,0.5)]"
         >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
+          <iframe
+            src="https://www.youtube.com/embed/Jq1BJwsiOYU?rel=0&modestbranding=1"
             className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src="/video_2026-01-04_15-25-53.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+            title="Palvo Live Demo"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
 
           {/* Bottom Bar UI */}
-          <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-between items-end">
+          <div className="absolute bottom-0 left-0 right-0 p-8 flex justify-between items-end pointer-events-none">
             <div className="flex flex-col gap-1">
               <span className="text-xs font-mono text-white/60 uppercase tracking-widest">
                 Palvo Live Demo
