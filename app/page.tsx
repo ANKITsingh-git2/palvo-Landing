@@ -1,5 +1,4 @@
 import { Navbar } from "@/components/navbar"
-import { Hero } from "@/components/hero"
 import { MobileAppShowcase } from "@/components/mobile-app"
 import { PreLaunchHighlights } from "@/components/pre-launch-highlights"
 import { MultiAgentCrew } from "@/components/multi-agent-crew"
@@ -12,13 +11,15 @@ import { FAQ } from "@/components/faq"
 import { CTA } from "@/components/cta"
 import { Footer } from "@/components/footer"
 import { ScrollProgress } from "@/components/scroll-progress"
+import PalvoHero from "@/components/palvo-hero"
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       <ScrollProgress />
       <Navbar />
-      <Hero />
+      <PalvoHero />
+
       <div id="vision">
         <PreLaunchHighlights />
       </div>
