@@ -2,7 +2,6 @@ import { Navbar } from "@/components/navbar"
 import { MobileAppShowcase } from "@/components/mobile-app"
 import { PreLaunchHighlights } from "@/components/pre-launch-highlights"
 import { MultiAgentCrew } from "@/components/multi-agent-crew"
-import { SolanaIntegration } from "@/components/solana-integration"
 import { DemoVideo } from "@/components/demo-video"
 import { UseCases } from "@/components/use-cases"
 import { Testimonials } from "@/components/testimonials"
@@ -29,7 +28,6 @@ export default function Home() {
       <div id="product">
         <MobileAppShowcase />
       </div>
-      <SolanaIntegration />
       <DemoVideo />
       <UseCases />
       <Testimonials />

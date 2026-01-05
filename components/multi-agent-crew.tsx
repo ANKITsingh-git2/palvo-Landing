@@ -1,193 +1,326 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useRef, useState } from "react"
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { Brain, ShieldCheck, Zap } from "lucide-react"
 import Image from "next/image"
 
 const agents = [
   {
     number: "01",
-    name: "Decoder Agent",
-    role: "Transcript Analysis & Summarization",
-    icon: Brain,
-    color: "from-blue-400 to-cyan-300",
-    description: "Listens to your conversations and voice commands in real-time. Uses advanced NLP to decode intent, extract key information, and summarize complex discussions into actionable insights.",
-    capabilities: [
-      "Real-time speech-to-text transcription",
-      "Context-aware intent recognition",
-      "Multi-language support",
-      "Intelligent summarization"
-    ]
+    name: "Decoder",
+    role: "Transcript Analysis",
+    description: "Real-time speech processing. Context-aware intent recognition. Your words, understood.",
+    capabilities: ["Speech-to-text", "Intent recognition", "Multi-language", "Summarization"],
+    image: "/app-screenshot-2.png" // Voice recording screenshot
   },
   {
     number: "02",
-    name: "Auditor Agent",
-    role: "Safety Verification & Risk Assessment",
-    icon: ShieldCheck,
-    color: "from-emerald-400 to-green-300",
-    description: "Acts as your personal security guardian. Analyzes market conditions, verifies transaction safety, and assesses risks before any Solana blockchain action is executed.",
-    capabilities: [
-      "Real-time market analysis",
-      "Smart contract verification",
-      "Risk scoring algorithms",
-      "Fraud detection & prevention"
-    ]
+    name: "Auditor",
+    role: "Safety Verification",
+    description: "Your security guardian. Analyzes conditions, verifies safety, assesses risk before execution.",
+    capabilities: ["Market analysis", "Contract verification", "Risk scoring", "Fraud prevention"],
+    image: "/app-screenshot-3.png" // Wallet/settings screenshot
   },
   {
     number: "03",
-    name: "Executor Agent",
-    role: "On-Chain Transaction Execution",
-    icon: Zap,
-    color: "from-purple-400 to-pink-300",
-    description: "The action-taker of the crew. Once verified by the Auditor, it executes Solana transactions at lightning speed—token swaps, transfers, or DeFi interactions—all hands-free.",
-    capabilities: [
-      "Sub-second Solana transactions",
-      "Multi-signature support",
-      "Gas optimization",
-      "Automated DeFi strategies"
-    ]
+    name: "Executor",
+    role: "On-Chain Action",
+    description: "Lightning-fast execution. Token swaps, transfers, DeFi—all verified, all hands-free.",
+    capabilities: ["Sub-second tx", "Multi-sig", "Gas optimization", "Auto strategies"],
+    image: "/app-screenshot-1.png" // Trade execution screenshot
   }
 ]
 
+const easing: [number, number, number, number] = [0.22, 1, 0.36, 1]
+
 export function MultiAgentCrew() {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [activeAgent, setActiveAgent] = useState(0)
+  const [headerRef, headerInView] = useInView({
+    threshold: 0.3,
     triggerOnce: true
   })
 
-  return (
-    <section className="py-32 relative overflow-hidden" ref={ref}>
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
-      <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2" />
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  })
 
-      <div className="container mx-auto px-6 relative z-10">
+  const phoneY = useTransform(scrollYProgress, [0, 1], ["0%", "-5%"])
+  const phoneRotate = useTransform(scrollYProgress, [0, 0.5, 1], [0, 2, 0])
+  const phoneScale = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [0.95, 1, 1, 0.95])
+
+  return (
+    <section ref={containerRef} className="relative bg-black">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-neutral-950 to-black" />
+      
+      {/* Header */}
+      <div className="relative z-10 pt-32 md:pt-48 pb-20">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          ref={headerRef}
+          initial={{ opacity: 0, y: 40 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1, ease: easing }}
+          className="text-center px-6"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6 drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-            <Brain className="w-4 h-4 text-primary" />
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">Multi-Agent AI Orchestration</span>
-          </div>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={headerInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-white/40 text-[11px] uppercase tracking-[0.3em] font-light mb-6 block"
+          >
+            Multi-Agent Architecture
+          </motion.span>
           
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            The AI Agent crew <br /> Behind Every Action
+          <h2 
+            className="text-white font-extralight leading-[1.1]"
+            style={{
+              fontSize: 'clamp(2.2rem, 7vw, 5rem)',
+              letterSpacing: '-0.03em',
+              textShadow: '0 0 80px rgba(255,255,255,0.1)',
+            }}
+          >
+            Three agents.
+            <br />
+            <span className="text-white/50">One seamless action.</span>
           </h2>
         </motion.div>
+      </div>
 
-        {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 max-w-7xl mx-auto relative">
-          {/* Left Column: Phone Mockup (Sticky) */}
-          <div className="hidden lg:block">
-            <div className="sticky top-1/2 -translate-y-1/2 flex items-center justify-center h-[600px]">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="relative group"
-              >
-                {/* Phone Frame */}
-                <div className="relative w-[340px] aspect-[9/19.5] rounded-[2.5rem] overflow-hidden bg-black border-[8px] border-zinc-900 shadow-2xl z-20">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-zinc-900 rounded-b-2xl z-40" />
-                  <Image
-                    src="/agent-files-screenshot.png"
-                    alt="Multi-Agent File Management"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                {/* Animated Glow */}
-                <div className="absolute -inset-12 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-full blur-3xl opacity-30 animate-pulse-slow -z-10" />
-              </motion.div>
+      {/* Scrolling Section */}
+      <div className="relative min-h-[300vh]">
+        
+        {/* Sticky Phone - Now with dynamic image */}
+        <div className="sticky top-0 h-screen flex items-center justify-center pointer-events-none z-20">
+          <motion.div
+            style={{ y: phoneY, rotate: phoneRotate, scale: phoneScale }}
+            className="relative"
+          >
+            <div className="relative w-[280px] md:w-[320px] aspect-[9/19.5] rounded-[3rem] overflow-hidden bg-neutral-950 border border-white/10 shadow-2xl">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-black rounded-b-2xl z-40" />
+              
+              {/* Dynamic Screenshot */}
+              <div className="absolute inset-0">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeAgent}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.5, ease: easing }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={agents[activeAgent].image}
+                      alt={`${agents[activeAgent].name} Agent Interface`}
+                      fill
+                      className="object-cover"
+                    />
+                  </motion.div>
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+              </div>
+
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] via-transparent to-transparent" />
             </div>
-          </div>
 
-          {/* Right Column: Scrolling Cards */}
-          <div className="relative">
-            <div className="flex flex-col gap-24 py-24">
-              {agents.map((agent, index) => (
-                 <AgentCard key={index} agent={agent} index={index} />
+            {/* Phone glow */}
+            <div className="absolute -inset-20 bg-white/[0.03] rounded-full blur-[80px] -z-10" />
+
+            {/* Active agent indicator */}
+            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2">
+              {agents.map((_, index) => (
+                <div
+                  key={index}
+                  className={`
+                    h-1 rounded-full transition-all duration-500
+                    ${index === activeAgent ? 'w-6 bg-white/50' : 'w-2 bg-white/15'}
+                  `}
+                />
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Action Highlights */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
-        >
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center hover:bg-white/10 transition-colors">
-            <div className="text-primary font-bold text-2xl mb-1">Sub-second</div>
-            <div className="text-muted-foreground text-sm font-medium uppercase tracking-widest">Execution</div>
+        {/* Cards */}
+        <div className="absolute inset-0 z-10">
+          <div className="h-full flex flex-col justify-around py-[15vh]">
+            {agents.map((agent, index) => (
+              <AgentCard 
+                key={agent.number} 
+                agent={agent} 
+                index={index}
+                side={index % 2 === 0 ? 'left' : 'right'}
+                onInView={() => setActiveAgent(index)}
+              />
+            ))}
           </div>
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center hover:bg-white/10 transition-colors">
-            <div className="text-accent font-bold text-2xl mb-1">Multi-layer</div>
-            <div className="text-muted-foreground text-sm font-medium uppercase tracking-widest">Verification</div>
-          </div>
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center hover:bg-white/10 transition-colors">
-            <div className="text-emerald-500 font-bold text-2xl mb-1">99.9%</div>
-            <div className="text-muted-foreground text-sm font-medium uppercase tracking-widest">Automated</div>
-          </div>
-        </motion.div>
+        </div>
+      </div>
+
+      {/* Bottom */}
+      <div className="relative z-10 pb-32 md:pb-48">
+        <BottomStats />
       </div>
     </section>
   )
 }
 
-function AgentCard({ agent, index }: { agent: any; index: number }) {
-  const [ref, inView] = useInView({
+function AgentCard({ 
+  agent, 
+  index, 
+  side,
+  onInView
+}: { 
+  agent: typeof agents[0]
+  index: number
+  side: 'left' | 'right'
+  onInView: () => void
+}) {
+  const [cardRef, cardInView] = useInView({
     threshold: 0.5,
     triggerOnce: false,
-    rootMargin: "-20% 0px -20% 0px"
+    rootMargin: "-10% 0px -10% 0px",
+    onChange: (inView) => {
+      if (inView) onInView()
+    }
   })
 
+  const isLeft = side === 'left'
+
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0.2, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0.2, y: 20, scale: 0.98 }}
-      transition={{ duration: 0.5 }}
-      className="group relative"
+    <div 
+      ref={cardRef}
+      className={`
+        flex px-6 md:px-12 lg:px-20
+        ${isLeft ? 'justify-start' : 'justify-end'}
+      `}
     >
-      <div className={`p-8 rounded-3xl border transition-all duration-500 shadow-xl overflow-hidden ${inView ? 'border-primary/40 bg-white/10' : 'border-white/5 bg-white/5 blur-[1px]'}`}>
-        <div className="absolute top-4 right-6 text-5xl font-bold text-white/5 group-hover:text-primary/10 transition-colors duration-500">
+      <motion.div
+        initial={{ opacity: 0, x: isLeft ? -60 : 60 }}
+        animate={{ 
+          opacity: cardInView ? 1 : 0.15,
+          x: cardInView ? 0 : (isLeft ? -30 : 30),
+          scale: cardInView ? 1 : 0.95,
+          filter: cardInView ? 'blur(0px)' : 'blur(4px)'
+        }}
+        transition={{ duration: 0.7, ease: easing }}
+        className={`
+          relative max-w-md lg:max-w-lg p-8 md:p-10 rounded-2xl 
+          border border-white/[0.08] bg-black/70 backdrop-blur-md
+          ${isLeft ? 'text-left' : 'text-right'}
+        `}
+      >
+        <span className="text-white/[0.12] text-5xl md:text-6xl font-extralight block mb-4">
           {agent.number}
+        </span>
+
+        <div className="mb-5">
+          <h3 
+            className="text-white font-light mb-2"
+            style={{ 
+              fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', 
+              letterSpacing: '-0.02em',
+              textShadow: '0 0 40px rgba(255,255,255,0.08)',
+            }}
+          >
+            {agent.name}
+            <span className="text-white/40">.</span>
+          </h3>
+          <span className="text-white/40 text-xs uppercase tracking-[0.2em] font-light">
+            {agent.role}
+          </span>
         </div>
 
-        <div className="flex items-start gap-6">
-          <div className={`flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br ${agent.color} p-3.5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-            <agent.icon className="w-full h-full text-white" />
-          </div>
-          
-          <div className="flex-1">
-            <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{agent.name}</h3>
-            <p className={`text-sm font-bold uppercase tracking-wider mb-4 bg-gradient-to-r ${agent.color} bg-clip-text text-transparent`}>
-              {agent.role}
-            </p>
-            
-            <p className="text-foreground/80 leading-relaxed mb-6 font-medium">
-              {agent.description}
-            </p>
+        <p 
+          className="text-white/60 font-light leading-relaxed mb-6"
+          style={{ fontSize: 'clamp(0.9rem, 2vw, 1.05rem)' }}
+        >
+          {agent.description}
+        </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
-              {agent.capabilities.map((cap: string, i: number) => (
-                <div key={i} className="flex items-center gap-2 group/item">
-                  <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${agent.color} group-hover/item:scale-150 transition-transform`} />
-                  <span className="text-sm text-foreground/90 font-medium">{cap}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className={`flex flex-wrap gap-2 ${isLeft ? 'justify-start' : 'justify-end'}`}>
+          {agent.capabilities.map((cap, i) => (
+            <span
+              key={i}
+              className="text-white/30 text-[10px] uppercase tracking-[0.12em] font-light 
+                         px-3 py-1.5 rounded-full border border-white/[0.08]
+                         hover:text-white/50 hover:border-white/15 transition-all duration-300"
+            >
+              {cap}
+            </span>
+          ))}
         </div>
-      </div>
-    </motion.div>
+
+        <motion.div 
+          className={`
+            absolute bottom-0 h-px bg-gradient-to-r from-white/30 to-transparent
+            ${isLeft ? 'left-8 right-1/3' : 'right-8 left-1/3 bg-gradient-to-l'}
+          `}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: cardInView ? 1 : 0 }}
+          transition={{ duration: 0.6, ease: easing }}
+          style={{ transformOrigin: isLeft ? 'left' : 'right' }}
+        />
+      </motion.div>
+    </div>
   )
 }
+
+function BottomStats() {
+  const [ref, inView] = useInView({
+    threshold: 0.3,
+    triggerOnce: true
+  })
+
+  const stats = [
+    { value: "<1s", label: "Execution" },
+    { value: "3-layer", label: "Verification" },
+    { value: "100%", label: "Hands-free" },
+  ]
+
+  return (
+    <div ref={ref} className="px-6">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="flex flex-wrap justify-center gap-x-16 gap-y-8 md:gap-x-24 mb-16"
+      >
+        {stats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: easing }}
+            className="text-center"
+          >
+            <div 
+              className="text-white font-extralight mb-2"
+              style={{ 
+                fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', 
+                letterSpacing: '-0.02em',
+                textShadow: '0 0 30px rgba(255,255,255,0.1)',
+              }}
+            >
+              {stat.value}
+            </div>
+            <div className="text-white/40 text-[10px] uppercase tracking-[0.25em] font-light">
+              {stat.label}
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={inView ? { scaleX: 1 } : {}}
+        transition={{ duration: 1.2, delay: 0.5, ease: easing }}
+        className="mx-auto w-full max-w-md h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
+      />
+    </div>
+  )
+}
+
+export default MultiAgentCrew
